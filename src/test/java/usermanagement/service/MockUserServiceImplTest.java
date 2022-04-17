@@ -93,6 +93,25 @@ public class MockUserServiceImplTest {
 		;
 	}
 
+	@Test
+	public void savingUserTest() {
+		doReturn(person).when(personDao).save(person);
+		doReturn(person).when(transformer).toUserEntity(user);
+		doReturn(user).when(transformer).toUserDomain(person);
+
+		User savedUser = testClass.save(user);
+		assertEquals(user, savedUser);
+	}
+
+	@Test(expected = UserNotFoundException.class)
+	public void findById_not_found_old() {
+		doReturn(null).when(personDao).findOne(Matchers.any(Integer.class));
+		doReturn(user).when(transformer).toUserDomain(Matchers.any(Person.class));
+
+		testClass.findById_old(1);
+	}
+
+
 	@Before
 	public void setup() {
 		person.setfName(ALI);
